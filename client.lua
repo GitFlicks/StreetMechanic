@@ -78,6 +78,7 @@ Citizen.CreateThread(function()
             if distanceInteract < 4.0 and not IsPedDeadOrDying(player, true) and IsPedInAnyVehicle(player, false) and not repairing then
             Draw3DText(Config.StreetMechanics[i].Mechanic.CarInteractCoord.x, Config.StreetMechanics[i].Mechanic.CarInteractCoord.y, Config.StreetMechanics[i].Mechanic.CarInteractCoord.z, Config.StreetMechanics[i].Mechanic["InteractText"])
             Draw3DText(Config.StreetMechanics[i].Mechanic.CarInteractCoord.x, Config.StreetMechanics[i].Mechanic.CarInteractCoord.y, Config.StreetMechanics[i].Mechanic.CarInteractCoord.z - 0.088, Config.StreetMechanics[i].Mechanic["DriftTyres"])
+            Draw3DText(Config.StreetMechanics[i].Mechanic.CarInteractCoord.x, Config.StreetMechanics[i].Mechanic.CarInteractCoord.y, Config.StreetMechanics[i].Mechanic.CarInteractCoord.z - 0.176, Config.StreetMechanics[i].Mechanic["DriftTyres2"])
                if IsControlJustPressed(0, 38) then 
                     local vehicle = GetVehiclePedIsIn(GetPlayerPed(-1))
                     ShowSubtitle('~y~Fixing ~w~up your car...', 4800)
@@ -134,6 +135,33 @@ Citizen.CreateThread(function()
                     Citizen.Wait(4000)
                     FreezeEntityPosition(Peds[i], true)
                 end
+
+                if IsControlJustPressed(0, 249) then 
+                  local vehicle = GetVehiclePedIsIn(GetPlayerPed(-1))
+                  SetEntityCoords(vehicle, Config.StreetMechanics[i].Mechanic.CarInteractCoord.x, Config.StreetMechanics[i].Mechanic.CarInteractCoord.y, Config.StreetMechanics[i].Mechanic.CarInteractCoord.z - 1 )
+                  SetEntityHeading(vehicle, Config.StreetMechanics[i].Mechanic.CarInteractHeading)
+                  ShowSubtitle('~b~Removing ~w~Drift tyres...', 4800)
+                  FreezeEntityPosition(Peds[i], false)
+                  FreezeEntityPosition(vehicle, true)
+                  TaskPedSlideToCoord(Peds[i], Config.StreetMechanics[i].Mechanic.CarHoodCoord.x, Config.StreetMechanics[i].Mechanic.CarHoodCoord.y, Config.StreetMechanics[i].Mechanic.CarHoodCoord.z, Config.StreetMechanics[i].Mechanic.CarHoodHeading, 400.0)
+                  local animDict = "anim@amb@clubhouse@tutorial@bkr_tut_ig3@"
+                  local animName = "machinic_loop_mechandplayer"
+                  Citizen.Wait(2800)
+                  SetEntityHeading(Peds[i], Config.StreetMechanics[i].Mechanic.CarHoodHeading)
+                  RequestAnimDict(animDict)
+                  while not HasAnimDictLoaded(animDict) do
+                           Citizen.Wait(100)
+                  end
+                  TaskPlayAnim(Peds[i], animDict, animName, 8.0, -8.0, -1, 1, 0, false, false, false)
+                  Citizen.Wait(4800)
+                  SetDriftTyresEnabled(vehicle, false)
+                  ClearPedTasks(Peds[i])
+                  ShowSubtitle('~b~Drift tyres ~w~succesfuly removed!...', 4800)
+                  FreezeEntityPosition(vehicle, false)
+                  TaskPedSlideToCoord(Peds[i], Config.StreetMechanics[i].Mechanic.Coords.x, Config.StreetMechanics[i].Mechanic.Coords.y, Config.StreetMechanics[i].Mechanic.Coords.z, Config.StreetMechanics[i].Mechanic.Heading, 400.0)
+                  Citizen.Wait(4000)
+                  FreezeEntityPosition(Peds[i], true)
+              end
             end
           end
         end		
